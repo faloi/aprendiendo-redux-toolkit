@@ -5,13 +5,14 @@ export interface Post {
   id: string
   title: string
   content: string
+  userId: string
 }
 
 export type PostRouteParams = RouteComponentProps<{ postId: string }>
 
 const initialState: Post[] = [
-  { id: '1', title: 'First Post!', content: 'Hello!' },
-  { id: '2', title: 'Second Post', content: 'More text' },
+  { id: '1', title: 'First Post!', content: 'Hello!', userId: '0' },
+  { id: '2', title: 'Second Post', content: 'More text', userId: '1' },
 ]
 
 export const postsSlice = createSlice({
@@ -23,12 +24,11 @@ export const postsSlice = createSlice({
         state.push(action.payload)
       },
       // Esta función se usa para que la UI no tenga que settear el id.
-      prepare(title: string, content: string) {
+      prepare(post: Omit<Post, 'id'>) {
         return {
           payload: {
             id: nanoid(),
-            title,
-            content,
+            ...post,
           },
         }
       },

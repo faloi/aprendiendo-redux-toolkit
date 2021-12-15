@@ -1,22 +1,33 @@
 import { useState } from 'react'
-import { useAppDispatch } from '../../app/hooks'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { onInputUpdated } from '../../app/ui'
 import { postAdded } from './postsSlice'
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [userId, setUserId] = useState('')
 
   const dispatch = useAppDispatch()
 
+  const users = useAppSelector((state) => state.users)
+
   const onSavePostClicked = () => {
     if (title && content) {
-      dispatch(postAdded(title, content))
+      dispatch(postAdded({ title, content, userId }))
 
       setTitle('')
       setContent('')
     }
   }
+
+  const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
+
+  const usersOptions = users.map((user) => (
+    <option key={user.id} value={user.id}>
+      {user.name}
+    </option>
+  ))
 
   return (
     <section>
@@ -30,6 +41,15 @@ export const AddPostForm = () => {
           value={title}
           onChange={onInputUpdated(setTitle)}
         />
+        <label htmlFor="postAuthor">Author:</label>
+        <select
+          id="postAuthor"
+          value={userId}
+          onChange={onInputUpdated(setUserId)}
+        >
+          <option value=""></option>
+          {usersOptions}
+        </select>
         <label htmlFor="postContent">Content:</label>
         <textarea
           id="postContent"
@@ -37,7 +57,7 @@ export const AddPostForm = () => {
           value={content}
           onChange={onInputUpdated(setContent)}
         />
-        <button type="button" onClick={onSavePostClicked}>
+        <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
           Save Post
         </button>
       </form>
