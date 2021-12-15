@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import { useDispatch } from 'react-redux'
 import postsReducer from '../features/posts/postsSlice'
 
 const store = configureStore({
@@ -16,7 +15,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
-
-export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 export default store
